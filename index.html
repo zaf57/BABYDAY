@@ -163,6 +163,61 @@
 </div>
 
 <script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+  // 🔥 Configuration Firebase (colle la tienne ici)
+const firebaseConfig = {
+  apiKey: "AIzaSyBnxS7Nt9-u6U0BNWgFdWbjnGLuumQsmLY",
+  authDomain: "babyday-813a2.firebaseapp.com",
+  projectId: "babyday-813a2",
+  storageBucket: "babyday-813a2.firebasestorage.app",
+  messagingSenderId: "746839739479",
+  appId: "1:746839739479:web:0450e28d13d8ffcb1f6712"
+};
+
+  // 🔧 Initialisation
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // ✅ Exemple : enregistrer une activité
+  async function addEntry() {
+    const activity = document.getElementById('activity').value;
+    const type = document.getElementById('type').value;
+
+    if (activity.trim() === '') {
+      alert("Ali dit : 'Écris quelque chose, s'il te plaît ! 🍼'");
+      return;
+    }
+
+    // Sauvegarde dans Firestore
+    await addDoc(collection(db, "journal"), {
+      type: type,
+      activity: activity,
+      date: new Date().toLocaleString()
+    });
+
+    document.getElementById('activity').value = '';
+    alert("Entrée enregistrée avec succès 🎉");
+    loadEntries(); // Recharge la liste après ajout
+  }
+
+  // 🔁 Charger les données existantes
+  async function loadEntries() {
+    const querySnapshot = await getDocs(collection(db, "journal"));
+    let html = "";
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      html += `<div><strong>${data.type}:</strong> ${data.activity} <em>(${data.date})</em></div>`;
+    });
+    document.getElementById("journalEntries").innerHTML = html;
+  }
+
+  loadEntries();
+</script>
+
+    
 let steps = 0;
 
 function showModule(id) {
