@@ -1,3 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="BabyDay.ico">
+<title>Applications pour Ali</title>
+<style>
+    body {
+        font-family: cursive;
+        /*background: linear-gradient(to bottom, #a8e6cf, #dcedc1);*/
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        overflow: hidden;
+        background-image: url(https://www.nanny-care.com/img/modules/oh_nc_news/news/7_picture.jpg);
+    }
+    .container {
+        background-color: #b9c7c8;
+        padding: 0px;
+        border-radius: 25px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        width: 90%;
+        max-width: 600px;
+        text-align: center;
+        position: relative;
+    }
+    .logo {
+        width: 100px;
+        margin-bottom: 20px;
+    }
+    h1 {
+        color: black;
+        margin-bottom: 20px;
+        font-size: 2rem;
+    }
+    button {
+        padding: 12px 20px;
+        margin: 10px;
+        border-radius: 15px;
+        border: none;
+        font-size: 1rem;
+        cursor: pointer;
+        background-color: #e7e2dc;
+        color: black;
+        transition: transform 0.2s;
+    }
+    button:hover {
+        transform: scale(1.05);
+    }
+    .module {
+        display: none;
+        margin-top: 20px;
+    }
+    input, select {
+        padding: 10px;
+        margin: 5px 0;
+        border-radius: 10px;
+        border: none;
+        width: 80%;
+        font-size: 1rem;
+    }
+    .entry {
+        background-color: #d0f0d0;
+        margin-top: 15px;
+        padding: 10px;
+        border-radius: 15px;
+        text-align: left;
+        animation: fadeIn 0.8s ease;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .star {
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        background-color: yellow;
+        border-radius: 50%;
+        top: -10px;
+        left: -10px;
+        animation: fall 4s linear infinite;
+        opacity: 0.8;
+    }
+    @keyframes fall {
+        to {
+            transform: translateY(120vh) rotate(360deg);
+            opacity: 0;
+        }
+    }
+</style>
+</head>
+<body>
+<div class="container" id="home">
+     <img src="BabyDay.png" alt="Logo BabyDay" class="logo">
+    <h1>Bienvenue Ali !</h1>
+    <p>Choisis une activité :</p>
+    <button onclick="showModule('journal')">1. Journal interactif</button>
+    <button onclick="showModule('sensoriel')">2. Bébé sensoriel</button>
+    <button onclick="showModule('histoire')">3. Histoires & chansons</button>
+    <button onclick="showModule('emotion')">4. Suivi émotionnel</button>
+    <button onclick="showModule('premiersPas')">5. Premiers pas</button>
+</div>
+
+<!-- 1. Journal interactif -->
+<div class="container module" id="journal">
+     <img src="BabyDay.png" alt="Logo BabyDay" class="logo">
+    <h1>Journal de bébé Ali</h1>
+    <input type="text" id="activity" placeholder="Nouvelle activité...">
+    <select id="type">
+        <option value="Nourriture">Nourriture</option>
+        <option value="Sommeil">Sommeil</option>
+        <option value="Couches">Couches</option>
+        <option value="Jeu">Jeu</option>
+    </select>
+    <button onclick="addEntry()">Ajouter au journal</button>
+    <button onclick="goHome()">Retour</button>
+    <div id="journalEntries"></div>
+</div>
+
+<!-- 2. Bébé sensoriel -->
+<div class="container module" id="sensoriel">
+     <img src="BabyDay.png" alt="Logo BabyDay" class="logo">
+    <h1>Bébé sensoriel</h1>
+    <button onclick="makeNoise()">Toucher l'écran</button>
+    <button onclick="goHome()">Retour</button>
+    <div id="sensoryOutput"></div>
+</div>
+
+<!-- 3. Histoires & chansons -->
+<div class="container module" id="histoire">
+     <img src="BabyDay.png" alt="Logo BabyDay" class="logo">
+    <h1>Histoires & Chansons pour Ali</h1>
+    <button onclick="playStory()">Lire une histoire</button>
+    <button onclick="playSong()">Écouter une berceuse</button>
+    <button onclick="goHome()">Retour</button>
+    <div id="story"></div>
+    <div id="song"></div>
+</div>
+
+<!-- 4. Suivi émotionnel -->
+<div class="container module" id="emotion">
+     <img src="BabyDay.png" alt="Logo BabyDay" class="logo">
+    <h1>Suivi émotionnel d'Ali</h1>
+    <button onclick="showEmotion('heureux')">😊 Heureux</button>
+    <button onclick="showEmotion('triste')">😢 Triste</button>
+    <button onclick="showEmotion('colere')">😡 En colère</button>
+    <button onclick="goHome()">Retour</button>
+    <div id="emotionOutput"></div>
+</div>
+
+<!-- 5. Premiers pas -->
+<div class="container module" id="premiersPas">
+     <img src="BabyDay.png" alt="Logo BabyDay" class="logo">
+    <h1>Premiers pas de bébé Ali</h1>
+    <button onclick="takeStep()">Faire un pas</button>
+    <button onclick="goHome()">Retour</button>
+    <div id="stepsOutput">Pas effectués : 0</div>
+</div>
+
+<script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+  // 🔥 Configuration Firebase (colle la tienne ici)
 const firebaseConfig = {
   apiKey: "AIzaSyBnxS7Nt9-u6U0BNWgFdWbjnGLuumQsmLY",
   authDomain: "babyday-813a2.firebaseapp.com",
@@ -6,3 +176,141 @@ const firebaseConfig = {
   messagingSenderId: "746839739479",
   appId: "1:746839739479:web:0450e28d13d8ffcb1f6712"
 };
+
+  // 🔧 Initialisation
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // ✅ Exemple : enregistrer une activité
+  async function addEntry() {
+    const activity = document.getElementById('activity').value;
+    const type = document.getElementById('type').value;
+
+    if (activity.trim() === '') {
+      alert("Ali dit : 'Écris quelque chose, s'il te plaît ! 🍼'");
+      return;
+    }
+
+    // Sauvegarde dans Firestore
+    await addDoc(collection(db, "journal"), {
+      type: type,
+      activity: activity,
+      date: new Date().toLocaleString()
+    });
+
+    document.getElementById('activity').value = '';
+    alert("Entrée enregistrée avec succès 🎉");
+    loadEntries(); // Recharge la liste après ajout
+  }
+
+  // 🔁 Charger les données existantes
+  async function loadEntries() {
+    const querySnapshot = await getDocs(collection(db, "journal"));
+    let html = "";
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      html += `<div><strong>${data.type}:</strong> ${data.activity} <em>(${data.date})</em></div>`;
+    });
+    document.getElementById("journalEntries").innerHTML = html;
+  }
+
+  loadEntries();
+</script>
+
+    
+let steps = 0;
+
+function showModule(id) {
+    document.getElementById('home').style.display = 'none';
+    document.querySelectorAll('.module').forEach(m => m.style.display = 'none');
+    document.getElementById(id).style.display = 'block';
+}
+
+// Retour à l'accueil
+function goHome() {
+    document.getElementById('home').style.display = 'block';
+    document.querySelectorAll('.module').forEach(m => m.style.display = 'none');
+}
+
+/* --- Journal interactif --- */
+function addEntry() {
+    const activity = document.getElementById('activity').value;
+    const type = document.getElementById('type').value;
+    if(activity.trim() === '') {
+        alert("Ali dit : 'Écris quelque chose, s'il te plaît ! 🍼'");
+        return;
+    }
+    const entry = document.createElement('div');
+    entry.className = 'entry';
+    entry.innerHTML = `<strong>${type}:</strong> ${activity} <em>(${new Date().toLocaleTimeString()})</em>`;
+    document.getElementById('journalEntries').prepend(entry);
+    document.getElementById('activity').value = '';
+}
+
+/* --- Bébé sensoriel --- */
+function makeNoise() {
+    const output = document.getElementById('sensoryOutput');
+    const colors = ['#FFB6C1', '#87CEFA', '#FFD700', '#ADFF2F', '#FFA07A'];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    output.style.backgroundColor = color;
+    output.style.height = '100px';
+    output.style.marginTop = '10px';
+    output.innerHTML = "✨ Couleur et lumière ! ✨";
+}
+
+/* --- Histoires & chansons --- */
+function playStory() {
+    const storyText = `
+        Il était une fois, dans un joli jardin verdoyant, un petit aventurier nommé <strong>Ali</strong>.
+        Chaque jour, Ali découvrait de nouvelles fleurs colorées et rencontrait des papillons lumineux.
+        Un jour, il trouva une étoile brillante tombée du ciel, qui chuchota : "Continue d'explorer, petit Ali, le monde est magique !"
+    `;
+    document.getElementById('story').innerHTML = storyText;
+    document.getElementById('song').innerHTML = '';
+    spawnStars(10);
+}
+
+function playSong() {
+    const songText = `
+        🎵 Doucement, Ali, ferme tes petits yeux,<br>
+        La lune veille sur toi dans les cieux.<br>
+        Les étoiles dansent et chantent pour toi,<br>
+        Dors bien, petit Ali, tout ira. 🎵
+    `;
+    document.getElementById('song').innerHTML = songText;
+    document.getElementById('story').innerHTML = '';
+    spawnStars(15);
+}
+
+function spawnStars(number) {
+    document.querySelectorAll('.star').forEach(s => s.remove());
+    for(let i=0;i<number;i++){
+        const star = document.createElement('div');
+        star.className='star';
+        star.style.left = Math.random() * 100 + 'vw';
+        star.style.animationDuration = 2 + Math.random()*3 + 's';
+        document.body.appendChild(star);
+        setTimeout(()=>star.remove(),4000);
+    }
+}
+
+/* --- Suivi émotionnel --- */
+function showEmotion(emotion) {
+    const output = document.getElementById('emotionOutput');
+    let msg = '';
+    switch(emotion){
+        case 'heureux': msg="Ali sourit et rit 😄"; break;
+        case 'triste': msg="Ali a besoin d'un câlin 😢"; break;
+        case 'colere': msg="Ali boude un peu 😡"; break;
+    }
+    output.innerHTML = msg;
+}
+
+/* --- Premiers pas --- */
+function takeStep() {
+    steps++;
+    document.getElementById('stepsOutput').innerHTML = "Pas effectués : " + steps;
+}
+</script>
+</body>
+</html>
