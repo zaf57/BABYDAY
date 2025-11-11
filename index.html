@@ -27,6 +27,10 @@
         text-align: center;
         position: relative;
     }
+    .logo {
+        width: 100px;
+        margin-bottom: 20px;
+    }
     h1 {
         color: #2e7d32;
         margin-bottom: 20px;
@@ -91,6 +95,7 @@
 </head>
 <body>
 <div class="container" id="home">
+     <img src="BabyDay.png" alt="Logo BabyDay" class="logo">
     <h1>Bienvenue Ali !</h1>
     <p>Choisis une activité :</p>
     <button onclick="showModule('journal')">1. Journal interactif</button>
@@ -102,6 +107,7 @@
 
 <!-- 1. Journal interactif -->
 <div class="container module" id="journal">
+     <img src="BabyDay.png" alt="Logo BabyDay" class="logo">
     <h1>Journal de bébé Ali</h1>
     <input type="text" id="activity" placeholder="Nouvelle activité...">
     <select id="type">
@@ -117,6 +123,7 @@
 
 <!-- 2. Bébé sensoriel -->
 <div class="container module" id="sensoriel">
+     <img src="BabyDay.png" alt="Logo BabyDay" class="logo">
     <h1>Bébé sensoriel</h1>
     <button onclick="makeNoise()">Toucher l'écran</button>
     <button onclick="goHome()">Retour</button>
@@ -125,6 +132,7 @@
 
 <!-- 3. Histoires & chansons -->
 <div class="container module" id="histoire">
+     <img src="BabyDay.png" alt="Logo BabyDay" class="logo">
     <h1>Histoires & Chansons pour Ali</h1>
     <button onclick="playStory()">Lire une histoire</button>
     <button onclick="playSong()">Écouter une berceuse</button>
@@ -135,6 +143,7 @@
 
 <!-- 4. Suivi émotionnel -->
 <div class="container module" id="emotion">
+     <img src="BabyDay.png" alt="Logo BabyDay" class="logo">
     <h1>Suivi émotionnel d'Ali</h1>
     <button onclick="showEmotion('heureux')">😊 Heureux</button>
     <button onclick="showEmotion('triste')">😢 Triste</button>
@@ -145,6 +154,7 @@
 
 <!-- 5. Premiers pas -->
 <div class="container module" id="premiersPas">
+     <img src="BabyDay.png" alt="Logo BabyDay" class="logo">
     <h1>Premiers pas de bébé Ali</h1>
     <button onclick="takeStep()">Faire un pas</button>
     <button onclick="goHome()">Retour</button>
